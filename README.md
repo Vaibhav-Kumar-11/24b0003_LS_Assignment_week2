@@ -1,79 +1,141 @@
 # 24b0003_LS_Assignment_week2
 
-# 📩 SMS Spam Classification using Word2Vec & Logistic Regression
+# 📚 Text Vectorization & Spam Classification – ML Week 2
 
-## 📌 Problem Statement
-
-Build a machine learning model that classifies SMS messages as **"spam"** or **"ham"** (non-spam), using the **SMS Spam Collection Dataset**.
-
----
-
-## 🧠 Approach
-
-The task was completed using the following step-by-step NLP + ML pipeline:
-
-### 1. **Data Loading**
-- Used `pandas` to load the dataset (`spam.csv`) with columns:
-  - `label`: spam/ham
-  - `message`: the SMS text
-
-### 2. **Text Preprocessing**
-Performed basic preprocessing to prepare the text data for vectorization:
-- Converted to lowercase
-- Tokenized using `split()` (fallback due to `nltk` environment issues)
-- Removed stopwords using `nltk.corpus.stopwords`
-> _Note_: Tokenization was kept simple for this assignment. Planned to upgrade to `nltk.word_tokenize()` with punctuation filtering in later iterations.
-
-### 3. **Word2Vec Embeddings**
-Used the pre-trained **Google News Word2Vec model (300 dimensions)** from `gensim.downloader`:
-- For each SMS message, calculated the average word vector of all known words in the message.
-
-### 4. **Model Training**
-- Transformed all messages into vector format using the above function.
-- Split the dataset into **80% training** and **20% testing** using `train_test_split`.
-- Trained a **Logistic Regression classifier** from `sklearn.linear_model`.
-
-### 5. **Evaluation**
-- Printed **accuracy score** on the test set.
-- Wrote a custom function `predict_message_class()` to classify any new message.
+Hey! I'm **Vaibhav (24b0003)** and this repository contains my Week 2 submissions for Learners' Space ML track.  
+This week focused on mastering **text vectorization techniques** through:
+- ✍️ Manual TF-IDF implementation
+- 🔧 Built-in vectorizers from `scikit-learn`
+- 📩 SMS Spam classification using **Word2Vec** + Logistic Regression
 
 ---
 
-## 🔢 Sample Output
+## 📌 1. Manual TF-IDF Vectorization 🧠
 
-```bash
-Accuracy : 0.96
+### 📄 Corpus:
+```python
+corpus = [
+    'the sun is a star',
+    'the moon is a satellite',
+    'the sun and moon are celestial bodies'
+]
+🛠️ What I Did:
+Converted text to lowercase for uniformity
 
-Input: "Congratulations! You've won a free cruise. Call now!"
-Prediction: spam
+Created term frequency (TF) dictionaries
 
-Input: "Hey bro, I’ll call you in 5 minutes."
-Prediction: ham
+Calculated inverse document frequency (IDF) manually
 
+Combined to get TF-IDF vectors per document
 
-📊 Libraries & Tools Used
-Library	                   Purpose
-pandas	          Data loading & manipulation
-nltk	          Stopwords filtering
-gensim	          Pre-trained Word2Vec embeddings
-scikit-learn	  ML model, train/test split, metrics
-numpy	          Array/vector handling
+🔍 Key Concepts:
+TF = frequency of term in the document
 
+IDF = log(total docs / docs containing the term)
 
-🧪 Learning Outcomes:
-1.Learned how to convert raw text into word embeddings
+Result: A list of TF-IDF dictionaries per document
 
-2.Understood the importance of preprocessing and cleaning
-
-3.Realized how pre-trained models (Word2Vec) simplify feature extraction
-
-4.Practiced writing custom prediction wrappers for reuse
-
-5.Faced and debugged real-world errors (nltk tokenizer issues, environment path conflicts)
+🧪 Sample Output:
+[{'the': 0.0, 'sun': 0.405, ...}, {'moon': 0.405, ...}, ...]
 
 
-🙋 Author
-Vaibhav Kumar
-IIT Bombay – Learners’ Space ML Assignment Week 2
-Submitted as part of SoS'25 program
+📌 2. Text Vectorization using Scikit-learn 🧰
+🧾 Tools Used:
+CountVectorizer – converts text to bag-of-words frequency matrix
 
+TfidfVectorizer – builds normalized TF-IDF vectors automatically
+
+🧪 Output Examples:
+python
+Copy
+Edit
+CountVectorizer:
+[[1 1 0 0 1 0 1] ...]
+
+TfidfVectorizer:
+[[0.5 0.5 0.0 0.0 0.5 ...] ...]
+✅ Learning Outcome:
+Quick and scalable vectorization using built-in tools, but now with better intuition thanks to the manual version first.
+
+
+
+📌 3. SMS Spam Classification using Word2Vec + Logistic Regression 🧠📩
+📂 Dataset:
+📄 spam.csv (read using pandas)
+Columns: label (spam/ham), message (text)
+
+🔍 Preprocessing:
+Converted to lowercase
+
+Tokenized and removed stopwords (nltk.corpus.stopwords)
+
+Used pre-trained Google Word2Vec model (300d) via gensim
+
+🧠 Vectorization Logic:
+python
+Copy
+Edit
+def get_avg_word2vec(tokens, model, vector_size=300):
+    vectors = [model[word] for word in tokens if word in model]
+    return np.mean(vectors, axis=0) if vectors else np.zeros(vector_size)
+📊 Model:
+Logistic Regression (sklearn.linear_model)
+
+Train/test split: 80-20, random_state=42
+
+Accuracy printed post evaluation
+
+🧪 Sample Output:
+bash
+Copy
+Edit
+Accuracy : 0.9728
+🔮 Prediction Function:
+python
+Copy
+Edit
+def predict_message_class(model, w2v_model, message):
+    tokens = preprocessing(message)
+    vector = get_avg_word2vec(tokens, w2v_model)
+    return "spam" if model.predict([vector])[0] == 1 else "ham"
+
+🧠 Reflections & Notes
+Took partial help from open-source examples for better clarity and direction.
+
+Some design choices (like split() vs nltk.tokenize) were made to avoid library issues during execution.
+
+Will revisit advanced tokenization methods in Week 3.
+
+✅ Summary of Learnings
+✅ Built strong intuition behind TF, IDF, and their product
+
+✅ Hands-on with CountVectorizer, TfidfVectorizer
+
+✅ Integrated NLP + ML for a real-world spam classification task
+
+📁 Folder Structure (Recommended)
+Copy
+Edit
+Week2/
+├── manual_tfidf.py
+├── sklearn_vectorizers.py
+├── sms_spam_classifier.py
+├── spam.csv
+└── README.md
+🔗 Dependencies
+Python ≥ 3.8
+
+Libraries:
+
+numpy, pandas
+
+nltk
+
+gensim
+
+scikit-learn
+
+📌 Author
+Vaibhav Kumar (24b0003)
+ML Learner @ Learners' Space Summer 2025
+GitHub: Vaibhav-Kumar-11
